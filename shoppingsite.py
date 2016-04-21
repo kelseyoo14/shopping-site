@@ -70,13 +70,11 @@ def shopping_cart():
     #   - keep track of the total amt of the entire order
     # - hand to the template the total order cost and the list of melon types
 
-    import pdb; pdb.set_trace()
+    # import pdb; pdb.set_trace()
 
-    # Do we need to creat list or dictionary?
-    # We need ID, Qty, Melon-Type, Price for each melon - put in dictionary?
-    # or not? reference instance attributes instead? loop through sending melons to cart.html?
     melons_in_cart_id = session["cart"].keys()
     cart_melons = {}
+    total = 0.00
     
     for melon_id in melons_in_cart_id:
         melon_id = int(melon_id)
@@ -85,11 +83,13 @@ def shopping_cart():
         cart_melons[melon_id]["common_name"] = melon_type.common_name
         cart_melons[melon_id]["price"] = melon_type.price
         cart_melons[melon_id]["qty"] = session["cart"][str(melon_id)]
+        total += cart_melons[melon_id]["qty"] * cart_melons[melon_id]["price"]
 
-    print cart_melons
+    # print cart_melons
 
 
-    return render_template("cart.html")
+    return render_template("cart.html",
+                            cart_melons = cart_melons, total=total)
 
 
 @app.route("/add_to_cart/<int:id>")
@@ -105,15 +105,21 @@ def add_to_cart(id):
     # The logic here should be something like:
     #
     # - add the id of the melon they bought to the cart in the session
-    if not session.get("cart"):
-        session["cart"] = {}
-    if session["cart"].get(id):
+    id = str(id)
+
+    session.setdefault("cart", {})
+    if id in session["cart"]:
+        print "should add one"
         session["cart"][id] += 1
     else:
+        print "creating 1"
         session["cart"][id] = 1
     flash("Melon successfully added to cart!")
 
-    return redirect("/cart")
+    print session["cart"][id]
+    print session["cart"]
+
+    return redirect("/melons")
 
 
 @app.route("/login", methods=["GET"])
