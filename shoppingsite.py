@@ -7,7 +7,7 @@ Authors: Joel Burton, Christian Fernandez, Meggie Mahnken.
 """
 
 
-from flask import Flask, render_template, redirect, flash
+from flask import Flask, render_template, redirect, flash, session
 import jinja2
 
 import melons
@@ -71,6 +71,24 @@ def shopping_cart():
     #   - keep track of the total amt of the entire order
     # - hand to the template the total order cost and the list of melon types
 
+
+
+    # Do we need to creat list or dictionary?
+    # We need ID, Qty, Melon-Type, Price for each melon - put in dictionary?
+    # or not? reference instance attributes instead? loop through sending melons to cart.html?
+    melons_in_cart_id = session["cart"].keys()
+
+    melons_in_cart_info = session
+
+    for id in session["cart"]:
+
+    
+    for melon in melons_in_cart:
+        melon = get_by_id(melon)
+        melon_type = melon.melon_type
+        price = melon.price
+
+
     return render_template("cart.html")
 
 
@@ -87,8 +105,15 @@ def add_to_cart(id):
     # The logic here should be something like:
     #
     # - add the id of the melon they bought to the cart in the session
+    if not session.get("cart"):
+        session["cart"] = {}
+    if session["cart"].get(id):
+        session["cart"][id] += 1
+    else:
+        session["cart"][id] = 1
+    flash("Melon successfully added to cart!")
 
-    return "Oops! This needs to be implemented!"
+    return redirect("/cart")
 
 
 @app.route("/login", methods=["GET"])
