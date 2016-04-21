@@ -51,7 +51,6 @@ def show_melon(melon_id):
     """
 
     melon = melons.get_by_id(melon_id)
-    print melon
     return render_template("melon_details.html",
                            display_melon=melon)
 
@@ -71,22 +70,23 @@ def shopping_cart():
     #   - keep track of the total amt of the entire order
     # - hand to the template the total order cost and the list of melon types
 
-
+    import pdb; pdb.set_trace()
 
     # Do we need to creat list or dictionary?
     # We need ID, Qty, Melon-Type, Price for each melon - put in dictionary?
     # or not? reference instance attributes instead? loop through sending melons to cart.html?
     melons_in_cart_id = session["cart"].keys()
-
-    melons_in_cart_info = session
-
-    for id in session["cart"]:
-
+    cart_melons = {}
     
-    for melon in melons_in_cart:
-        melon = get_by_id(melon)
-        melon_type = melon.melon_type
-        price = melon.price
+    for melon_id in melons_in_cart_id:
+        melon_id = int(melon_id)
+        melon_type = melons.get_by_id(melon_id)
+        cart_melons[melon_id] = {}
+        cart_melons[melon_id]["common_name"] = melon_type.common_name
+        cart_melons[melon_id]["price"] = melon_type.price
+        cart_melons[melon_id]["qty"] = session["cart"][str(melon_id)]
+
+    print cart_melons
 
 
     return render_template("cart.html")
